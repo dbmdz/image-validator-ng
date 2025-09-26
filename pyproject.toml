@@ -1,7 +1,3 @@
-[build-system]
-requires = ["setuptools>=61.0"]
-build-backend = "setuptools.build_meta"
-
 [project]
 name = "iiif-validator-ng"
 version = "0.1.0"
@@ -10,7 +6,7 @@ authors = [
   { name="IIIF Contributors", email="simeon.warner@cornell.edu" },
 ]
 description = "IIIF Image API Validator NG"
-readme = "README"
+readme = "README.md"
 requires-python = ">=3.9"
 license = { text = "Apache-2.0" }
 dependencies = [
@@ -24,10 +20,12 @@ iiif-validator = "iiif_validator.cli:cli"
 [project.urls]
 "Homepage" = "https://github.com/dbmdz/image-validator-ng"
 
-[tool.mypy]
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.mpyy]
 mypy_path = ".stubs"
 
 [tool.pyright]
 stubPath = ".stubs"
-
-

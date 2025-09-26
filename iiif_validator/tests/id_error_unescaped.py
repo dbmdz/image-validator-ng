@@ -22,7 +22,7 @@ class ErrorUnescapedIdentifier(ValidationTest):
         resp = make_request(url)
         if resp.status in (404, 400):
             return ValidationSuccess(
-                details="Returned 404 or 400 for random identifier"
+                details="Returned 404 or 400 for unescaped identifier"
             )
         else:
             return ValidationFailure(
