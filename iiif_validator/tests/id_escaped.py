@@ -28,5 +28,5 @@ class CorrectlyHandlesEscapedIdentifier(ValidationTest):
                 url=url,
                 expected="HTTP Status 200",
                 received=f"HTTP Status {resp.status}",
-                details="Got unexpected status code for escapedidentifier",
+                details="Got unexpected status code for escaped identifier",
             )
