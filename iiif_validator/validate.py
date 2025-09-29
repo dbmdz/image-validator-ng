@@ -4,13 +4,14 @@ from urllib.error import HTTPError
 
 from .tests.test import (
     get_tests,
+    ServerFeatures,
     TargetServer,
-    ComplianceLevel,
     TestCategory,
     ValidationFailure,
     ValidationSuccess,
     ValidationTest,
 )
+from .tests.http_caching import HttpCachingTest
 
 
 class SizedGenerator[T]:
@@ -25,7 +26,10 @@ class SizedGenerator[T]:
         return next(self._iterator)
 
 
-def _test_is_applicable(test, features):
+def _test_is_applicable(test, features: ServerFeatures):
+    if test == HttpCachingTest and not features.supports_caching:
+        return False
+
     if features.version not in test.versions:
         return False
     level = test.compliance_level
@@ -76,15 +80,15 @@ def run_tests(
         def _generator():
             for future in as_completed(future_to_test):
                 test = future_to_test[future]
-                # try:
-                result = future.result()
-                # except Exception as exc:
-                #    result = ValidationFailure(
-                #        url= exc.url if isinstance(exc, HTTPError) else "<unknown>",
-                #        expected="Test to complete without error",
-                #        received=f"Test raised an exception: {exc}",
-                #        details="An unexpected error occurred during the test execution",
-                #    )
+                try:
+                    result = future.result()
+                except Exception as exc:
+                   result = ValidationFailure(
+                       url= exc.url if isinstance(exc, HTTPError) else "<unknown>",
+                       expected="Test to complete without error",
+                       received=f"Test raised an exception: {exc}",
+                       details="An unexpected error occurred during the test execution",
+                   )
                 yield test, result
 
         return SizedGenerator(_generator(), len(applicable_tests))

@@ -113,7 +113,12 @@ class TargetServer(NamedTuple):
         return f"{self.base_url}/{self.validation_id}/info.json"
 
     def feature_set(self) -> ServerFeatures:
-        return ServerFeatures.from_info_json(get_info_json(self))
+        resp = make_request(self.info_url())
+        supports_caching = (
+            "etag" in resp.headers or "last-modified" in resp.headers
+        )
+        return ServerFeatures.from_info_json(json.loads(resp.body), supports_caching)
+
 
 
 class ServerFeatures(NamedTuple):
@@ -122,9 +127,10 @@ class ServerFeatures(NamedTuple):
     extra_qualities: list[str]
     extra_formats: list[str]
     extra_features: list[str]
+    supports_caching: bool
 
     @classmethod
-    def from_info_json(cls, info: dict) -> ServerFeatures:
+    def from_info_json(cls, info: dict, supports_caching: bool) -> ServerFeatures:
         compliance = ComplianceLevel.from_profile(info["profile"])
         if "id" in info:
             version = IIIFVersion.V3
@@ -151,6 +157,7 @@ class ServerFeatures(NamedTuple):
             extra_qualities=extra_qualities,
             extra_formats=extra_formats,
             extra_features=extra_features,
+            supports_caching=supports_caching,
         )
 
 
@@ -248,7 +255,7 @@ def get_image(server: TargetServer, request: ImageAPIRequest) -> Image:
         raise Exception(
             f"Failed to fetch image: {response.status} {response.body.decode('utf-8', errors='replace')}"
         )
-    return Image.new_from_buffer(response.body)
+    return Image.new_from_buffer(response.body, "")
 
 
 def get_expected_image() -> Image:
