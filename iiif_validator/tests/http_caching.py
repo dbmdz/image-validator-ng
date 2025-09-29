@@ -77,7 +77,7 @@ def _single_run(
     if resp.status == 304:
         results.append(
             ValidationSuccess(
-                details="Server returned HTTP 304 Not Modified for a conditional request on the validation {resource_type}"
+                details=f"Server returned HTTP 304 Not Modified for a conditional request on the validation {resource_type}"
             )
         )
     else:
