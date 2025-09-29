@@ -29,3 +29,6 @@ mypy_path = ".stubs"
 
 [tool.pyright]
 stubPath = ".stubs"
+
+[tool.setuptools.package-data]
+iiif_validator = ["*.png"]
