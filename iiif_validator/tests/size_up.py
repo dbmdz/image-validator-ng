@@ -38,7 +38,7 @@ class SizeUpTest(ValidationTest):
         img = get_image(server, req)
 
         expected_size = (s, s)
-        if img.size != expected_size:
+        if (img.width, img.height) != expected_size:
             url = req.url(server)
             return [
                 ValidationFailure(
@@ -109,7 +109,7 @@ class SizeUpTest(ValidationTest):
             req = ImageAPIRequest.of(size=size_str)
             img = get_image(server, req)
 
-            if img.size != expected_size:
+            if (img.width, img.height) != expected_size:
                 url = req.url(server)
                 results.append(
                     ValidationFailure(

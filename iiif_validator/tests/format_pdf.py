@@ -12,7 +12,7 @@ from .test import (
 
 
 class FormatPDF(ValidationTest):
-    name = "JPEG format"
+    name = "PDF format"
     compliance_level = ComplianceLevel.OPTIONAL
     category = TestCategory.FORMAT
     versions = [IIIFVersion.V2, IIIFVersion.V3]

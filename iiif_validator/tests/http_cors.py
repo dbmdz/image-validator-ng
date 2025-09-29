@@ -25,7 +25,7 @@ class CorsImageTest(ValidationTest):
     `Access-Control-Allow-Origin` header and the preflight request pattern.
     """
 
-    name = "CORS Header on info.json responses"
+    name = "CORS Header on all responses"
     compliance_level = ComplianceLevel.LEVEL_1
     category = TestCategory.HTTP
     versions = [IIIFVersion.V2, IIIFVersion.V3]
