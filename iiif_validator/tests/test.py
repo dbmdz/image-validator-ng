@@ -209,11 +209,12 @@ def make_request(
     extra_headers: dict[str, str] = {},
     opener: OpenerDirector | None = None,
 ) -> HttpResponse:
+    all_headers = {**HEADERS, **extra_headers}
     if isinstance(req_or_url, str):
-        req = Request(req_or_url, headers={**HEADERS, **extra_headers})
+        req = Request(req_or_url, headers=all_headers)
     else:
         req = req_or_url
-        for k, v in HEADERS.items():
+        for k, v in all_headers.items():
             req.add_header(k, v)
     try:
         if opener:
@@ -244,8 +245,10 @@ def get_image(server: TargetServer, request: ImageAPIRequest) -> Image:
     url = f"{server.base_url}/{server.validation_id}/{request.region}/{request.size}/{request.rotation}/{request.quality}.{request.format}"
     response = make_request(url)
     if response.status != 200:
-        raise Exception(f"Failed to fetch image: {response.status}")
-    return Image.new_from_buffer(response.body, "")
+        raise Exception(
+            f"Failed to fetch image: {response.status} {response.body.decode('utf-8', errors='replace')}"
+        )
+    return Image.new_from_buffer(response.body)
 
 
 def get_expected_image() -> Image:
